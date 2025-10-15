@@ -1,0 +1,26 @@
+{
+  "name": "shelvesense-backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "start:prod": "node --enable-source-maps dist/index.js",
+    "build": "tsc && cp -r prisma dist/",
+    "migrate": "prisma migrate dev",
+    "seed": "ts-node prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.17.0",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "pino": "^9.3.1",
+    "pino-pretty": "^11.2.1",
+    "ws": "^8.18.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "prisma": "^5.17.0",
+    "tsx": "^4.16.0",
+    "typescript": "^5.5.4"
+  }
+}
