@@ -1,0 +1,6 @@
+device_id: ${DEVICE_ID:-shelf-edge-dev-001}
+shelf_id:  ${SHELF_ID:-demo-shelf-1}
+rest_url:  ${BACKEND_REST_URL:-http://localhost:8080}
+ws_url:    ${BACKEND_WS_URL:-ws://localhost:8080/ws}
+camera_index: 0
+confidence_threshold: 0.6
