@@ -1,0 +1,43 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: shelvesense-db
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: shelvesense
+    ports: ["5432:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d shelvesense"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    build: ../backend
+    container_name: shelvesense-backend
+    env_file: ../.env
+    depends_on:
+      db:
+        condition: service_healthy
+    ports: ["8080:8080"]
+    command: ["pnpm","start:prod"]
+
+  frontend:
+    build: ../frontend
+    container_name: shelvesense-frontend
+    environment:
+      VITE_API_BASE: http://localhost:8080
+      VITE_WS_URL: ws://localhost:8080/ws
+    ports: ["5173:5173"]
+    depends_on:
+      - backend
+
+  edge:
+    build: ../edge
+    container_name: shelvesense-edge
+    env_file: ../.env
+    depends_on:
+      - backend
+    # comment out if running with a real camera on host
+    command: ["python","simulate.py"]
