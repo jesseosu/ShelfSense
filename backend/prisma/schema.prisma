@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Shelf {
+  id         String  @id @default(cuid())
+  name       String
+  location   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  items      Item[]
+  events     Event[]
+}
+
+model Item {
+  id         String  @id @default(cuid())
+  sku        String
+  name       String
+  imgUrl     String?
+  shelfId    String
+  quantity   Int      @default(0)
+  minStock   Int      @default(2)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  shelf      Shelf    @relation(fields: [shelfId], references: [id])
+  events     Event[]
+}
+
+enum EventType {
+  ITEM_REMOVED
+  ITEM_RETURNED
+  LOW_STOCK
+  HEARTBEAT
+}
+
+model Event {
+  id         String   @id @default(cuid())
+  shelfId    String
+  itemId     String?
+  deviceId   String?
+  type       EventType
+  payload    Json
+  createdAt  DateTime @default(now())
+
+  shelf      Shelf    @relation(fields: [shelfId], references: [id])
+  item       Item?    @relation(fields: [itemId], references: [id])
+}
